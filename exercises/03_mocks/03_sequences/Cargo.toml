@@ -1,0 +1,11 @@
+[package]
+name = "mockall_sequence"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mockall = { workspace = true }
+
+[dev-dependencies]
+anyhow = "1.0.95"
+googletest = { workspace = true }
