@@ -30,7 +30,7 @@ mod tests {
     #[googletest::test]
     fn failed_is_c_with_value() {
         let x = MyCustomEnum::B(10);
-        assert_that!(x, matches_pattern!(MyCustomEnum::C { a: eq("hello") }))
-        //assert!(matches!(x, MyCustomEnum::C { a: "hello" }));
+        assert_that!(x, matches_pattern!(&MyCustomEnum::C { a: eq("hello") }));
+        // assert!(matches!(x, MyCustomEnum::C { a: "hello" }));
     }
 }

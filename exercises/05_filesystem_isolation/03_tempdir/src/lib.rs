@@ -28,17 +28,17 @@ mod tests {
     use cargo_manifest::{Manifest, Package, Workspace};
     use googletest::expect_that;
     use googletest::matchers::{eq, len};
-    use std::io::Write;
-    use std::path::Path;
+    use std::path::{Path, PathBuf};
     use tempfile::TempDir;
+    use std::io::Write;
 
-    #[googletest::test]
+    #[googletest::gtest]
     fn happy_path() {
         // Arrange
         let workspace_root = TempDir::new().expect("Directorio Raiz No Existe!");
         let workspace_root_path = workspace_root.path();
 
-        let workspace_manifest = Manifest {
+        let workspace_manifest: Manifest<(), ()> = Manifest {
             workspace: Some(Workspace {
                 members: vec!["api".to_string(), "helpers".to_string()],
                 ..Default::default()
@@ -64,7 +64,7 @@ mod tests {
         expect_that!(manifests, len(eq(2)));
     }
 
-    fn save_member_manifest(m: Manifest, workspace_root: &Path) {
+    fn save_member_manifest(m: Manifest<(), ()>, workspace_root: &Path) {
         // get package name        
         let packname = m.package.as_ref().map(|s| s.name.as_str() ).expect("No tiene paquete");
         let packpath = workspace_root.join(packname);
@@ -74,10 +74,11 @@ mod tests {
         save_workspace_manifest(m, packpath.as_path());
     }
 
-    fn save_workspace_manifest(m: Manifest, workspace_root: &Path) {
+    fn save_workspace_manifest(m: Manifest<(), ()>, workspace_root: &Path) {
         let cargopath = workspace_root.join("Cargo.toml");
         let mut cargofile = std::fs::File::create(cargopath.as_path()).expect("No pudo crear workspace");
         let tomlstr = toml::to_string(&m).unwrap();
-        cargofile.write(tomlstr.as_bytes()).expect("No pudo escribir cargo workspace");        
+        
+        cargofile.write(tomlstr.as_bytes()).expect("No pudo escribir cargo workspace");
     }
 }

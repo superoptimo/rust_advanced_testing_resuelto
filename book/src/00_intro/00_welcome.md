@@ -76,25 +76,12 @@ Each exercise is structured as a Rust package.
 The package contains the exercise itself, instructions on what to do (in `src/lib.rs`), and a mechanism to
 automatically verify your solution.
 
-You also need to install `ctr` (**C**heck **T**est **R**esults), a little tool that will be invoked
-to verify the outcomes of your tests:
-
-```bash
-# Install `ctr` from the top-level folder of the repository
-cargo install --path ctr
-```
-
 ### `wr`, the workshop runner
 
-To verify your solutions, we've provided a tool that will guide you through the course.
-It is the `wr` CLI (short for "workshop runner").
-Install it with:
+To verify your solutions, we've also provided a tool to guide you through the course: the `wr` CLI, short for "workshop runner".
+Install `wr` by following the instructions on [its website](https://mainmatter.github.io/rust-workshop-runner/).
 
-```bash
-cargo install --locked workshop-runner
-```
-
-In a new terminal, navigate back to the top-level folder of the repository.
+Once you have `wr` installed, open a new terminal and navigate to the top-level folder of the repository.
 Run the `wr` command to start the course:
 
 ```bash

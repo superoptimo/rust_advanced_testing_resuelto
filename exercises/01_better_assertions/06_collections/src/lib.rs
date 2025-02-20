@@ -21,12 +21,12 @@ mod tests {
     fn failed_contains() {
         let x = btreeset![1, 2, 3];
         let y = 7;
-        assert_that!(x, contains(eq(y)))
+        assert_that!(x, contains(eq(&y)))
     }
 
     #[googletest::test]
     fn failed_subset_of() {
-        let x = btreeset![1, 2, 3];
+        let x = btreeset![&1, &2, &3];
         let y = btreeset![3, 4];
         assert_that!(y, subset_of(x))
     }
@@ -34,7 +34,7 @@ mod tests {
     #[googletest::test]
     fn failed_each() {
         let x = btreeset![1, 2, 3, 4];
-        assert_that!(x, each(gt(2)))
+        assert_that!(x, each(gt(&2)))
         //assert!(x.iter().all(|x| *x > 2));
     }
 

@@ -8,7 +8,7 @@ mod tests {
     use googletest::matchers::eq;
     use sqlx::PgPool;
 
-    #[tokio::test]
+    #[sqlx::test]
     async fn insert() {
         // Load .env file if available.
         dotenvy::dotenv().ok();

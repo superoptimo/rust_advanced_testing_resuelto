@@ -2,9 +2,14 @@
 mod tests {
     #[test]
     fn ctr_is_installed_and_on_path() {
-        std::process::Command::new("ctr")
+        std::process::Command::new("cargo")
+            .arg("run")
+            .arg("--package")
+            .arg("ctr")
+            .arg("--bin")
+            .arg("ctr")
             .output()
-            .expect("Failed to invoke `ctr`");
+            .expect("Failed to invoke `ctr` through `cargo`");
     }
 
     #[test]
@@ -19,8 +24,8 @@ mod tests {
 
         assert!(
             output.status.success(),
-            "`rustup run nightly cargo --version` failed:\n{}",
-            String::from_utf8_lossy(&output.stderr)
+            "`rustup run nightly cargo --version` failed: {}\n\nTo fix the error, install the nightly toolchain on your machine:\n\n\trustup toolchain install nightly\n",
+            String::from_utf8_lossy(&output.stderr).trim()
         );
     }
 }

@@ -1,16 +1,19 @@
 //! Write a custom `is_redirect` matcher that checks if a `StatusCode` is a redirect.
-use googletest::matcher::Matcher;
+use googletest::matcher::{Matcher, MatcherBase};
 use http::StatusCode;
 
-pub fn is_redirect() -> impl Matcher<ActualT = StatusCode> {
+pub fn is_redirect() -> impl Matcher<StatusCode> {
+    // this requires a macro
+    #[derive(MatcherBase)]
     struct Redirect(StatusCode);
 
-    impl Matcher for Redirect
+    // Templated generic trait
+    impl Matcher<StatusCode> for Redirect    
     {
-        type ActualT = StatusCode;
+        //type ActualT = StatusCode;
     
-        fn matches(&self, actual: &Self::ActualT) -> googletest::matcher::MatcherResult {
-            (self.0 == *actual).into()
+        fn matches(&self, actual: StatusCode) -> googletest::matcher::MatcherResult {
+            (self.0 == actual).into()
         }
     
         fn describe(&self, matcher_result: googletest::matcher::MatcherResult) -> googletest::description::Description {

@@ -5,21 +5,39 @@ members = [
   "exercises/08_macros/01_no_op_macro/macros01",
   "exercises/08_macros/02_test/macros02",
   "exercises/08_macros/03_hooks/macros03",
+  "exercises/07_http_mocking/02_match"
 ]
 resolver = "2"
 
 [workspace.dependencies]
-googletest = "0.11.0"
-insta = "1.34"
-libtest-mimic = "0.7.0"
+anyhow = "1.0.95"
+cargo-manifest = "0.19"
+dotenvy = "0.15.7"
+fs-err = "3.0.0"
+googletest = "0.13.0"
+http = "1"
+insta = "1.42"
+libtest-mimic = "0.8.1"
 maplit = "1"
-mockall = { version = "0.13" }
-proc-macro2 = "1.0.76"
-quote = "1.0.35"
+mockall = "0.13"
+once_cell = "1.20.2"
+owo-colors = "4"
+pretty_assertions = "1.4.1"
+proc-macro2 = "1.0.93"
+quote = "1.0.38"
+regex = "1.11.1"
 reqwest = { version = "0.12", default-features = false, features = ["json"] }
-serde_json = "1.0.111"
+semver = "1.0.24"
+serde = "1"
+serde_json = "1.0.135"
+serde_yaml = "0.9.34"
 sqlx = { version = "0.8", features = ["postgres", "runtime-tokio", "migrate"] }
-syn = "2"
-tempfile = "3.9.0"
+static_assertions = "1.1.0"
+syn = {version = "2.0.98", features = ["full", "fold", "parsing", "extra-traits"]}
+tempfile = "3.15.0"
+textwrap = "0.16.1"
+thiserror = "2.0.11"
+time = "0.3.37"
 tokio = { version = "1", features = ["full"] }
-wiremock = "0.6.0"
+toml = "0.8.19"
+wiremock = "0.6.2"

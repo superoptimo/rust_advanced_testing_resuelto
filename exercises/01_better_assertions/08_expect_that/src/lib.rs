@@ -9,8 +9,8 @@ mod tests {
         let v: Vec<i32> = vec![1, 2, 3];
         // Convert the assertion below into two invocations of `expect_that!`.        
         //assert_that!(v, all!(each(lt(3)), each(gt(1))))
-        expect_that!(v, each(lt(3)));
-        expect_that!(v, each(gt(1)));
+        expect_that!(v, each(lt(&3)));
+        expect_that!(v, each(gt(&1)));
         // verify_current_test_outcome().unwrap()
     }
 
@@ -38,8 +38,8 @@ mod tests {
     // Notice that we are returning a `Result` from the test function.
     fn barrier() -> googletest::Result<()> {
         let v: Vec<i32> = vec![1, 2, 3];
-        expect_that!(v, each(lt(3)));
-        expect_that!(v, each(gt(1)));
+        expect_that!(v, each(lt(&3)));
+        expect_that!(v, each(gt(&1)));
 
         verify_current_test_outcome()?;
 

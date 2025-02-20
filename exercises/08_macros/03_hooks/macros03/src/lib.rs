@@ -1,12 +1,12 @@
 use proc_macro::TokenStream;
-use quote::{quote, ToTokens};
+use quote::quote;
 use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
 use syn::{Attribute, ItemFn, Token};
 
 #[proc_macro_attribute]
 pub fn test(args: TokenStream, input: TokenStream) -> TokenStream {
-    let mut test_fn: ItemFn = syn::parse_macro_input!(input as ItemFn);
+    let test_fn: ItemFn = syn::parse_macro_input!(input as ItemFn);
     let Args { before, after } = syn::parse_macro_input!(args as RawArgs).validate();
 
     let ItemFn {
@@ -15,7 +15,27 @@ pub fn test(args: TokenStream, input: TokenStream) -> TokenStream {
         sig,
         block,
     } = test_fn;
-    let mut output = todo!("Use quote");
+
+    let block_stmts = block.stmts;
+
+    let mut output = quote::quote! {
+        #(#attrs)*
+        #vis #sig
+        {
+            // before callings
+            #(
+                #before();
+            )*
+
+            // original block
+            #(#block_stmts)*
+
+            // after callings
+            #(
+                #after();
+            )*
+        }
+    };
 
     if !attrs.iter().any(|a| is_test_attribute(a)) {
         output = {
@@ -43,13 +63,28 @@ struct Args {
 
 impl RawArgs {
     pub fn validate(self) -> Args {
-        todo!()
+        let mut before_args:Vec<syn::Path> = Vec::with_capacity(1);
+        let mut after_args:Vec<syn::Path> = Vec::with_capacity(1);
+
+        for varg in self.vars.iter() {
+            if varg.type_.eq("before") {
+                before_args.push(varg.fn_path.clone());
+            }
+            else if varg.type_.eq("after")
+            {
+                after_args.push(varg.fn_path.clone());
+            }
+        }
+
+        Args{
+            before: before_args, after: after_args
+        }
     }
 }
 
 struct RawHook {
     type_: syn::Ident,
-    equals: Token![=],
+    _equals: Token![=],
     fn_path: syn::Path,
 }
 
@@ -64,7 +99,10 @@ impl Parse for RawArgs {
 
 impl Parse for RawHook {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        todo!()
+        let parsed_type = input.parse()?;
+        let sep = input.parse()?;
+        let parsed_path = input.parse()?;
+        Ok(Self{type_: parsed_type, _equals: sep, fn_path:parsed_path})
     }
 }
 

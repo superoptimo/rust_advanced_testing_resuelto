@@ -50,6 +50,8 @@ impl Repository {
 
 #[cfg(test)]
 mod tests {
+    use std::future::IntoFuture;
+
     use googletest::assert_that;
     use googletest::matchers::eq;
     use googletest::prelude::err;
@@ -57,20 +59,26 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    #[googletest::test]
+    #[googletest::gtest]
     #[tokio::test]
     async fn permissions_can_be_revoked() {
         // Arrange
         let server = MockServer::start().await;
         let caller_id = 1;
         let expected_path = format!("/auth/{caller_id}");
-        server
-            .register(
+        let base_url = Url::parse(&server.uri()).unwrap();
+
+        let repository = 
+        {
+            let _guard = server.register_as_scoped(
                 Mock::given(method("GET"))
                     .and(path(&expected_path))
                     .respond_with(ResponseTemplate::new(200)),
-            )
-            .await;
+            ).await;
+            
+            super::Repository::new(base_url.clone(), caller_id).await
+        };
+        
         server
             .register(
                 Mock::given(method("GET"))
@@ -78,10 +86,6 @@ mod tests {
                     .respond_with(ResponseTemplate::new(403)),
             )
             .await;
-
-        let base_url = Url::parse(&server.uri()).unwrap();
-
-        let repository = super::Repository::new(base_url.clone(), caller_id).await;
 
         // Act
         let outcome = repository.get(2).await;

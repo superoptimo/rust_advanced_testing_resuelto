@@ -19,36 +19,36 @@ mod tests {
     use googletest::assert_that;
     use googletest::matchers::eq;
     use std::io::{BufReader, Seek, SeekFrom, Write};
-    use std::os::unix::ffi::OsStrExt;
     use std::path::PathBuf;
     use tempfile::tempfile;
 
-    #[googletest::test]
+    #[googletest::gtest]
     #[should_panic(expected = "The config is empty")]
     fn panics_if_config_is_empty() {
         let mut config = BufReader::new(tempfile().unwrap());
         super::get_cli_path(&mut config);
     }
 
-    #[googletest::test]
+    #[googletest::gtest]
     #[should_panic(expected = "First line is not valid UTF-8")]
     fn panics_if_config_contains_invalid_utf8() {
         let invalid_utf8 = [0xFF];
         let mut config = tempfile().unwrap();
         let siz = config.write(invalid_utf8.as_slice()).unwrap();
         assert!(siz > 0);        
-        config.flush().unwrap();
-        config.rewind().unwrap();
+        config.flush().unwrap(); // releases buffer
+        config.rewind().unwrap(); // moves to the first position
 
         super::get_cli_path(BufReader::new(config));
     }
 
-    #[googletest::test]
+    #[googletest::gtest]
     fn happy_path() {
         let cli_path = PathBuf::from("my_cli");
 
         let mut config = tempfile().unwrap();
-        let siz = config.write(cli_path.as_os_str().as_bytes()).unwrap();
+
+        let siz = config.write(cli_path.as_os_str().as_encoded_bytes()).unwrap();
         assert!(siz > 0);        
         config.flush().unwrap();
         config.rewind().unwrap();
